@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('Docker Compose up ') { 
             steps {
-                sh '''mkdir hellojenkins'''
+                sh '''/usr/bin/docker-compose up'''
             }
         }
 
