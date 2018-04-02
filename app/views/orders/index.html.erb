@@ -1,0 +1,52 @@
+<p id="notice"><%= notice %></p>
+<h1>Orders</h1>
+
+<table class="table" id="orders">
+  <thead>
+    <tr>
+      <th>Resturant</th>
+      <th>Type</th>
+      <th>Status</th>
+      <th>By</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @orders.each do |order| %>
+
+
+      <tr>
+        <td><%= order.resturant %></td>
+        <td><%= order.typ %></td>
+        <td class="Orderstatus" id= <%= order.id %> >  <%= order.statu %></td>
+        <td><%= order.user.name %></td>
+        <td><%= link_to 'Show', order %></td>
+        <% if current_user.name == order.user.name%>
+          <% if order.statu == "Waiting..." %>
+        <td class="finishOrder" id="finish" to=<%= order.id %> > <a>Finish</a></td>
+          <td class="DeleteOrder" to=<%= order.id %> > <a>Remove</a></td>
+            <% end %>
+        <% end %>
+      </tr>
+    <% end %>
+
+
+    <% @inivtedOrder.each do |order| %>
+
+    <tr>
+      <td><%= order.resturant %></td>
+      <td><%= order.typ %></td>
+      <td class="Orderstatus" id= <%= order.id %>><%= order.statu %></td>
+      <td><%= order.user.name %></td>
+      <td><%= link_to 'Show', order %></td>
+      <% end %>
+    </tr>
+
+
+  </tbody>
+</table>
+
+<div class="center"><%= will_paginate @orders, renderer: BootstrapPagination::Rails, previous_label: "Older", next_label: "Newer" %></div>
+<br>
+<%= link_to 'New Order', new_order_path %>

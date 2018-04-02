@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Yalla Notlob</title>
+    <%= csrf_meta_tags %>
+
+<!--     <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %> -->
+<!--     <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %> -->
+
+    <%= stylesheet_link_tag "bootstrap", media: "all" %>
+    <%= stylesheet_link_tag "style", media: "all" %>
+    <%= stylesheet_link_tag "font-awesome", media: "all" %>
+
+  </head>
+  <body>
+
+  <nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="/">Yalla Notlob</a>
+      </div>
+
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav">
+          <li class="<%= yield :hm %>"><a href="/"><i class="fa fa-fw fa-home"></i> Home<span class="sr-only">(current)</span></a></li>
+          <li><a href="/friendships"><i class="fa fa-fw fa-users"></i> Friends</a></li>
+          <li class="<%= yield :grpscls %>"><a href="/groups"><i class="fa fa-fw fa-cubes"></i> Groups</a></li>
+          <li class="<%= yield :rdrscls %>"><a href="/orders"><i class="fa fa-fw fa-list-ul"></i> Orders</a></li>
+        </ul>
+
+        <% if current_user %>
+          <span id="usr-id" class="hidden"><%= current_user.id %></span>
+        <% end %>
+
+        <ul class="nav navbar-nav navbar-right">
+
+            <% if user_signed_in? %>
+
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-fw fa-bell"></i> Notifications <span class="badge badge-alert noitfications-counter">5</span> <span class="caret"></span></a>
+                <ul class="dropdown-menu msgs-menu">
+                  <div class="msgs-container">
+
+                    <% @notifications.each do |notification| %>
+                      <div class="media notification">
+                        <div class="pull-left">
+                          <img class="notification-img" src="/images/unknown.jpg">
+                        </div>
+
+                        <div class="media-body">
+                          <% if notification[3] == "invite" %>
+                            <span class="notification-text"><%= notification[1] %></span> <a class="notification-link notification-join" href="#" orderid="<%= notification[4] %>">Join</a>
+                          <% elsif  notification[3] == "join" %>
+                            <span class="notification-text"><%= notification[1] %></span> <a class="notification-link notification-invite" href="/orders/<%= notification[4] %>" orderid="<%= notification[4] %>">Order</a>
+                          <% elsif  notification[3] == "cancel" %>
+                            <span class="notification-text"><%= notification[1] %></span>
+                          <% elsif  notification[3] == "finished" %>
+                            <span class="notification-text"><%= notification[1] %></span> <a class="notification-link notification-invite" href="/orders/<%= notification[4] %>" orderid="<%= notification[4] %>">View</a>
+                            <% elsif  notification[3] == "orderOwner" %>
+                            <span class="notification-text"><%= notification[1] %></span> <a class="notification-link notification-invite" href="/orders/<%= notification[4] %>" orderid="<%= notification[4] %>">View</a>
+                          <% end %>
+                          <small class="text-muted msg-time"><i class="fa fa-clock-o"></i> <span class="notification-date"><%= notification[5] %></span></small>
+                        </div>
+                      </div>
+                    <% end %>
+
+                  </div> <!-- ./msgs-container -->
+
+                  <div class="media notification hidden">
+                    <div class="pull-left">
+                      <img class="notification-img" src="images/marei.jpg">
+                    </div>
+
+                    <div class="media-body">
+                      <span class="notification-text">Ahmed joined your breakfast </span> <a class="notification-link" href="#" orderid="999">Order</a>
+
+                      <small class="text-muted msg-time"><i class="fa fa-clock-o"></i> <span class="notification-date">23-02-2016 7:30 PM</span></small>
+                    </div>
+                  </div>
+
+
+                  <li role="separstator" class="divider grey"></li>
+                  <li class="text-center"><a href="#"><i class="fa fa-envelope"></i> View all notifications </a></li>
+                </ul>
+              </li>
+
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><%= image_tag current_user.image.url(:thumb) %></span> <%= current_user.name %><span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li><%= link_to user_path(current_user) ,method: :get do %>
+                      <i class="fa fa-fw fa-user"></i> <%= current_user.name %></li>
+                      <% end %>
+                  <li role="separator" class="divider"></li>
+
+                  <li><%= link_to('Logout', destroy_user_session_path, method: :delete) %></li>
+                </ul>
+              </li>
+
+            <% else %>
+              <li>
+              <%= link_to('Login', new_user_session_path)  %>
+              </li>
+              <li>
+                <%= link_to('Register', new_user_registration_path)  %>
+              </li>
+            <% end %>
+
+        </ul>
+      </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+  </nav>
+
+  <div class="container">
+    <div class="alert alert-danger error" role="alert"></div>
+    <div class="alert alert-success success" role="alert"></div>
+    <!-- <p class="notice"><%= notice %></p>
+    <p class="alert"><%= alert %></p> -->
+    <%= yield %>
+  </div><!-- /.container -->
+
+  <footer class="navbar-fixed-bottom">
+    <div class="container text-center">
+      &copy; All rights reserved ITI Cloudians 38. 2018
+    </div>
+  </footer>
+
+    <!-- Load Javascript -->
+    <%-#<%= javascript_include_tag "application" -%>
+    <%= javascript_include_tag "jquery" %>
+    <%= javascript_include_tag "cable" %>
+    <%= javascript_include_tag "bootstrap" %>
+    <%= javascript_include_tag "app" %>
+  </body>
+</html>

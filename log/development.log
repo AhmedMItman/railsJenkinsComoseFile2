@@ -1,0 +1,875 @@
+  [1m[35m (0.8ms)[0m  [1m[35mSET NAMES utf8,  @@SESSION.sql_mode = CONCAT(CONCAT(@@sql_mode, ',STRICT_ALL_TABLES'), ',NO_AUTO_VALUE_ON_ZERO'),  @@SESSION.sql_auto_is_null = 0, @@SESSION.wait_timeout = 2147483[0m
+  [1m[35m (346.3ms)[0m  [1m[35mCREATE TABLE `schema_migrations` (`version` varchar(255) NOT NULL PRIMARY KEY) ENGINE=InnoDB[0m
+  [1m[35m (318.0ms)[0m  [1m[35mCREATE TABLE `ar_internal_metadata` (`key` varchar(255) NOT NULL PRIMARY KEY, `value` varchar(255), `created_at` datetime NOT NULL, `updated_at` datetime NOT NULL) ENGINE=InnoDB[0m
+  [1m[35m (0.7ms)[0m  [1m[34mSELECT GET_LOCK('4671394259554759170', 0)[0m
+  [1m[35m (0.4ms)[0m  [1m[34mSELECT `schema_migrations`.`version` FROM `schema_migrations` ORDER BY `schema_migrations`.`version` ASC[0m
+Migrating to CreateUsers (20180308170655)
+  [1m[35m (0.5ms)[0m  [1m[35mDROP TABLE IF EXISTS `users`[0m
+  [1m[35m (284.9ms)[0m  [1m[35mCREATE TABLE `users` (`id` bigint NOT NULL AUTO_INCREMENT PRIMARY KEY, `name` varchar(255), `created_at` datetime NOT NULL, `updated_at` datetime NOT NULL) ENGINE=InnoDB[0m
+  [1m[35m (0.6ms)[0m  [1m[35mBEGIN[0m
+  [1m[35mSQL (13.4ms)[0m  [1m[32mINSERT INTO `schema_migrations` (`version`) VALUES ('20180308170655')[0m
+  [1m[35m (41.4ms)[0m  [1m[35mCOMMIT[0m
+Migrating to CreateGroups (20180308170746)
+  [1m[35m (333.2ms)[0m  [1m[35mCREATE TABLE `groups` (`id` bigint NOT NULL AUTO_INCREMENT PRIMARY KEY, `name` varchar(255), `created_at` datetime NOT NULL, `updated_at` datetime NOT NULL) ENGINE=InnoDB[0m
+  [1m[35m (0.6ms)[0m  [1m[35mBEGIN[0m
+  [1m[35mSQL (7.5ms)[0m  [1m[32mINSERT INTO `schema_migrations` (`version`) VALUES ('20180308170746')[0m
+  [1m[35m (75.6ms)[0m  [1m[35mCOMMIT[0m
+Migrating to AddDeviseToUsers (20180308172625)
+  [1m[35m (530.1ms)[0m  [1m[35mALTER TABLE `users` ADD `email` varchar(255) DEFAULT '' NOT NULL[0m
+  [1m[35m (561.9ms)[0m  [1m[35mALTER TABLE `users` ADD `encrypted_password` varchar(255) DEFAULT '' NOT NULL[0m
+  [1m[35m (438.2ms)[0m  [1m[35mALTER TABLE `users` ADD `reset_password_token` varchar(255)[0m
+  [1m[35m (593.0ms)[0m  [1m[35mALTER TABLE `users` ADD `reset_password_sent_at` datetime[0m
+  [1m[35m (451.4ms)[0m  [1m[35mALTER TABLE `users` ADD `remember_created_at` datetime[0m
+  [1m[35m (639.6ms)[0m  [1m[35mALTER TABLE `users` ADD `sign_in_count` int DEFAULT 0 NOT NULL[0m
+  [1m[35m (563.0ms)[0m  [1m[35mALTER TABLE `users` ADD `current_sign_in_at` datetime[0m
+  [1m[35m (541.1ms)[0m  [1m[35mALTER TABLE `users` ADD `last_sign_in_at` datetime[0m
+  [1m[35m (605.2ms)[0m  [1m[35mALTER TABLE `users` ADD `current_sign_in_ip` varchar(255)[0m
+  [1m[35m (426.8ms)[0m  [1m[35mALTER TABLE `users` ADD `last_sign_in_ip` varchar(255)[0m
+  [1m[35m (258.0ms)[0m  [1m[35mCREATE UNIQUE INDEX `index_users_on_email`  ON `users` (`email`) [0m
+  [1m[35m (289.9ms)[0m  [1m[35mCREATE UNIQUE INDEX `index_users_on_reset_password_token`  ON `users` (`reset_password_token`) [0m
+  [1m[35m (0.3ms)[0m  [1m[35mBEGIN[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO `schema_migrations` (`version`) VALUES ('20180308172625')[0m
+  [1m[35m (43.3ms)[0m  [1m[35mCOMMIT[0m
+Migrating to CreateJoinTableUserGroup (20180309084858)
+  [1m[35m (331.0ms)[0m  [1m[35mCREATE TABLE `groups_users` (`user_id` bigint NOT NULL, `group_id` bigint NOT NULL,  INDEX `index_groups_users_on_user_id_and_group_id`  (`user_id`, `group_id`),  INDEX `index_groups_users_on_group_id_and_user_id`  (`group_id`, `user_id`)) ENGINE=InnoDB[0m
+  [1m[35m (0.6ms)[0m  [1m[35mBEGIN[0m
+  [1m[35mSQL (0.9ms)[0m  [1m[32mINSERT INTO `schema_migrations` (`version`) VALUES ('20180309084858')[0m
+  [1m[35m (29.1ms)[0m  [1m[35mCOMMIT[0m
+Migrating to CreateItems (20180309094528)
+  [1m[35m (354.4ms)[0m  [1m[35mCREATE TABLE `items` (`id` bigint NOT NULL AUTO_INCREMENT PRIMARY KEY, `user_id` bigint, `order_id` bigint, `quantity` int, `price` float, `created_at` datetime NOT NULL, `updated_at` datetime NOT NULL,  INDEX `index_items_on_user_id`  (`user_id`),  INDEX `index_items_on_order_id`  (`order_id`)) ENGINE=InnoDB[0m
+  [1m[35m (0.9ms)[0m  [1m[35mBEGIN[0m
+  [1m[35mSQL (1.0ms)[0m  [1m[32mINSERT INTO `schema_migrations` (`version`) VALUES ('20180309094528')[0m
+  [1m[35m (37.1ms)[0m  [1m[35mCOMMIT[0m
+Migrating to CreateUserNotifications (20180309100911)
+  [1m[35m (465.9ms)[0m  [1m[35mCREATE TABLE `user_notifications` (`id` bigint NOT NULL AUTO_INCREMENT PRIMARY KEY, `user_id` bigint, `notification_id` bigint,  INDEX `index_user_notifications_on_user_id`  (`user_id`),  INDEX `index_user_notifications_on_notification_id`  (`notification_id`)) ENGINE=InnoDB[0m
+  [1m[35m (0.7ms)[0m  [1m[35mBEGIN[0m
+  [1m[35mSQL (0.7ms)[0m  [1m[32mINSERT INTO `schema_migrations` (`version`) VALUES ('20180309100911')[0m
+  [1m[35m (28.8ms)[0m  [1m[35mCOMMIT[0m
+Migrating to CreateNotifications (20180309110417)
+  [1m[35m (266.3ms)[0m  [1m[35mCREATE TABLE `notifications` (`id` bigint NOT NULL AUTO_INCREMENT PRIMARY KEY, `message` varchar(255), `from` varchar(255), `typ` varchar(255), `orderId` int, `created_at` datetime NOT NULL, `updated_at` datetime NOT NULL) ENGINE=InnoDB[0m
+  [1m[35m (0.7ms)[0m  [1m[35mBEGIN[0m
+  [1m[35mSQL (0.8ms)[0m  [1m[32mINSERT INTO `schema_migrations` (`version`) VALUES ('20180309110417')[0m
+  [1m[35m (28.3ms)[0m  [1m[35mCOMMIT[0m
+Migrating to AddOmniauthToUsers (20180310175402)
+  [1m[35m (695.1ms)[0m  [1m[35mALTER TABLE `users` ADD `image` text[0m
+  [1m[35m (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO `schema_migrations` (`version`) VALUES ('20180310175402')[0m
+  [1m[35m (54.9ms)[0m  [1m[35mCOMMIT[0m
+Migrating to CreateFriendships (20180311083547)
+  [1m[35m (321.8ms)[0m  [1m[35mCREATE TABLE `friendships` (`id` bigint NOT NULL AUTO_INCREMENT PRIMARY KEY, `user_id` int, `friend_id` int, `created_at` datetime NOT NULL, `updated_at` datetime NOT NULL) ENGINE=InnoDB[0m
+  [1m[35m (0.8ms)[0m  [1m[35mBEGIN[0m
+  [1m[35mSQL (0.8ms)[0m  [1m[32mINSERT INTO `schema_migrations` (`version`) VALUES ('20180311083547')[0m
+  [1m[35m (39.3ms)[0m  [1m[35mCOMMIT[0m
+Migrating to AddUserIdToGroup (20180313013643)
+  [1m[35m (494.2ms)[0m  [1m[35mALTER TABLE `groups` ADD `user_id` int[0m
+  [1m[35m (0.4ms)[0m  [1m[35mBEGIN[0m
+  [1m[35mSQL (0.4ms)[0m  [1m[32mINSERT INTO `schema_migrations` (`version`) VALUES ('20180313013643')[0m
+  [1m[35m (31.8ms)[0m  [1m[35mCOMMIT[0m
+Migrating to CreateOrders (20180313030041)
+  [1m[35m (386.5ms)[0m  [1m[35mCREATE TABLE `orders` (`id` bigint NOT NULL AUTO_INCREMENT PRIMARY KEY, `resturant` varchar(255), `menu` varchar(255), `typ` varchar(255), `statu` varchar(255), `user_id` bigint, `created_at` datetime NOT NULL, `updated_at` datetime NOT NULL,  INDEX `index_orders_on_user_id`  (`user_id`), CONSTRAINT `fk_rails_f868b47f6a`
+FOREIGN KEY (`user_id`)
+  REFERENCES `users` (`id`)
+) ENGINE=InnoDB[0m
+  [1m[35m (0.4ms)[0m  [1m[35mBEGIN[0m
+  [1m[35mSQL (0.8ms)[0m  [1m[32mINSERT INTO `schema_migrations` (`version`) VALUES ('20180313030041')[0m
+  [1m[35m (41.3ms)[0m  [1m[35mCOMMIT[0m
+Migrating to AddCommentToItem (20180313040342)
+  [1m[35m (617.9ms)[0m  [1m[35mALTER TABLE `items` ADD `comment` text[0m
+  [1m[35m (0.3ms)[0m  [1m[35mBEGIN[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO `schema_migrations` (`version`) VALUES ('20180313040342')[0m
+  [1m[35m (32.1ms)[0m  [1m[35mCOMMIT[0m
+Migrating to AddFileNameToUser (20180313080150)
+  [1m[35m (626.1ms)[0m  [1m[35mALTER TABLE `users` ADD `image_file_name` varchar(255)[0m
+  [1m[35m (0.4ms)[0m  [1m[35mBEGIN[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO `schema_migrations` (`version`) VALUES ('20180313080150')[0m
+  [1m[35m (34.3ms)[0m  [1m[35mCOMMIT[0m
+Migrating to AddImageContentTypeToUser (20180313080505)
+  [1m[35m (626.2ms)[0m  [1m[35mALTER TABLE `users` ADD `image_content_type` varchar(255)[0m
+  [1m[35m (562.4ms)[0m  [1m[35mALTER TABLE `users` ADD `image_file_size` int[0m
+  [1m[35m (639.4ms)[0m  [1m[35mALTER TABLE `users` ADD `image_updated_at` datetime[0m
+  [1m[35m (0.3ms)[0m  [1m[35mBEGIN[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO `schema_migrations` (`version`) VALUES ('20180313080505')[0m
+  [1m[35m (43.4ms)[0m  [1m[35mCOMMIT[0m
+Migrating to AddImageContentTypeToOrder (20180313092727)
+  [1m[35m (616.9ms)[0m  [1m[35mALTER TABLE `orders` ADD `menu_content_type` varchar(255)[0m
+  [1m[35m (562.1ms)[0m  [1m[35mALTER TABLE `orders` ADD `menu_file_name` varchar(255)[0m
+  [1m[35m (618.7ms)[0m  [1m[35mALTER TABLE `orders` ADD `menu_file_size` int[0m
+  [1m[35m (472.1ms)[0m  [1m[35mALTER TABLE `orders` ADD `menu_updated_at` datetime[0m
+  [1m[35m (0.4ms)[0m  [1m[35mBEGIN[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO `schema_migrations` (`version`) VALUES ('20180313092727')[0m
+  [1m[35m (45.1ms)[0m  [1m[35mCOMMIT[0m
+Migrating to AddNameToItem (20180313120140)
+  [1m[35m (581.9ms)[0m  [1m[35mALTER TABLE `items` ADD `name` varchar(255)[0m
+  [1m[35m (0.3ms)[0m  [1m[35mBEGIN[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO `schema_migrations` (`version`) VALUES ('20180313120140')[0m
+  [1m[35m (32.1ms)[0m  [1m[35mCOMMIT[0m
+Migrating to CreateFriendOrders (20180314144333)
+  [1m[35m (319.3ms)[0m  [1m[35mCREATE TABLE `friend_orders` (`id` bigint NOT NULL AUTO_INCREMENT PRIMARY KEY, `order_id` bigint, `friend_id` int, `created_at` datetime NOT NULL, `updated_at` datetime NOT NULL,  INDEX `index_friend_orders_on_order_id`  (`order_id`), CONSTRAINT `fk_rails_8553c338c9`
+FOREIGN KEY (`order_id`)
+  REFERENCES `orders` (`id`)
+) ENGINE=InnoDB[0m
+  [1m[35m (0.7ms)[0m  [1m[35mBEGIN[0m
+  [1m[35mSQL (0.8ms)[0m  [1m[32mINSERT INTO `schema_migrations` (`version`) VALUES ('20180314144333')[0m
+  [1m[35m (39.3ms)[0m  [1m[35mCOMMIT[0m
+Migrating to RemoveClientFromUsers (20180318091205)
+  [1m[35m (0.7ms)[0m  [1m[35mBEGIN[0m
+  [1m[35mSQL (0.5ms)[0m  [1m[32mINSERT INTO `schema_migrations` (`version`) VALUES ('20180318091205')[0m
+  [1m[35m (39.9ms)[0m  [1m[35mCOMMIT[0m
+Migrating to AddAuthTokenToUsers (20180320151727)
+  [1m[35m (607.0ms)[0m  [1m[35mALTER TABLE `users` ADD `auth_token` varchar(255)[0m
+  [1m[35m (0.5ms)[0m  [1m[35mBEGIN[0m
+  [1m[35mSQL (0.6ms)[0m  [1m[32mINSERT INTO `schema_migrations` (`version`) VALUES ('20180320151727')[0m
+  [1m[35m (29.5ms)[0m  [1m[35mCOMMIT[0m
+Migrating to AddPasswordResetToUsers (20180320151750)
+  [1m[35m (1629.4ms)[0m  [1m[35mALTER TABLE `users` ADD `password_reset_token` varchar(255)[0m
+  [1m[35m (616.9ms)[0m  [1m[35mALTER TABLE `users` ADD `password_reset_sent_at` datetime[0m
+  [1m[35m (0.4ms)[0m  [1m[35mBEGIN[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO `schema_migrations` (`version`) VALUES ('20180320151750')[0m
+  [1m[35m (42.8ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mActiveRecord::InternalMetadata Load (17.8ms)[0m  [1m[34mSELECT  `ar_internal_metadata`.* FROM `ar_internal_metadata` WHERE `ar_internal_metadata`.`key` = 'environment' LIMIT 1[0m
+  [1m[35m (0.3ms)[0m  [1m[35mBEGIN[0m
+  [1m[35mSQL (0.4ms)[0m  [1m[32mINSERT INTO `ar_internal_metadata` (`key`, `value`, `created_at`, `updated_at`) VALUES ('environment', 'development', '2018-03-29 10:59:46', '2018-03-29 10:59:46')[0m
+  [1m[35m (48.9ms)[0m  [1m[35mCOMMIT[0m
+  [1m[35m (0.7ms)[0m  [1m[34mSELECT RELEASE_LOCK('4671394259554759170')[0m
+  [1m[35m (0.3ms)[0m  [1m[34mSELECT `schema_migrations`.`version` FROM `schema_migrations` ORDER BY `schema_migrations`.`version` ASC[0m
+Started GET "/" for 172.19.0.1 at 2018-03-29 11:00:13 +0000
+Cannot render console from 172.19.0.1! Allowed networks: 127.0.0.1, ::1, 127.0.0.0/127.255.255.255
+  [1m[35m (0.7ms)[0m  [1m[35mSET NAMES utf8,  @@SESSION.sql_mode = CONCAT(CONCAT(@@sql_mode, ',STRICT_ALL_TABLES'), ',NO_AUTO_VALUE_ON_ZERO'),  @@SESSION.sql_auto_is_null = 0, @@SESSION.wait_timeout = 2147483[0m
+  [1m[35m (0.9ms)[0m  [1m[34mSELECT `schema_migrations`.`version` FROM `schema_migrations` ORDER BY `schema_migrations`.`version` ASC[0m
+Processing by HomeController#index as HTML
+Completed 401 Unauthorized in 36ms (ActiveRecord: 0.0ms)
+
+
+Started GET "/users/sign_in" for 172.19.0.1 at 2018-03-29 11:00:13 +0000
+Cannot render console from 172.19.0.1! Allowed networks: 127.0.0.1, ::1, 127.0.0.0/127.255.255.255
+Processing by Devise::SessionsController#new as HTML
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (3.1ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (47.1ms)
+Completed 200 OK in 1600ms (Views: 1529.2ms | ActiveRecord: 19.9ms)
+
+
+Started GET "/" for 172.19.0.1 at 2018-04-01 11:35:12 +0000
+Cannot render console from 172.19.0.1! Allowed networks: 127.0.0.1, ::1, 127.0.0.0/127.255.255.255
+  [1m[35m (0.9ms)[0m  [1m[35mSET NAMES utf8,  @@SESSION.sql_mode = CONCAT(CONCAT(@@sql_mode, ',STRICT_ALL_TABLES'), ',NO_AUTO_VALUE_ON_ZERO'),  @@SESSION.sql_auto_is_null = 0, @@SESSION.wait_timeout = 2147483[0m
+  
+ActiveRecord::PendingMigrationError (
+
+Migrations are pending. To resolve this issue, run:
+
+        bin/rails db:migrate RAILS_ENV=development
+
+):
+  
+activerecord (5.1.5) lib/active_record/migration.rb:576:in `check_pending!'
+activerecord (5.1.5) lib/active_record/migration.rb:553:in `call'
+actionpack (5.1.5) lib/action_dispatch/middleware/callbacks.rb:26:in `block in call'
+activesupport (5.1.5) lib/active_support/callbacks.rb:97:in `run_callbacks'
+actionpack (5.1.5) lib/action_dispatch/middleware/callbacks.rb:24:in `call'
+actionpack (5.1.5) lib/action_dispatch/middleware/executor.rb:12:in `call'
+actionpack (5.1.5) lib/action_dispatch/middleware/debug_exceptions.rb:59:in `call'
+web-console (3.5.1) lib/web_console/middleware.rb:135:in `call_app'
+web-console (3.5.1) lib/web_console/middleware.rb:20:in `block in call'
+web-console (3.5.1) lib/web_console/middleware.rb:18:in `catch'
+web-console (3.5.1) lib/web_console/middleware.rb:18:in `call'
+actionpack (5.1.5) lib/action_dispatch/middleware/show_exceptions.rb:31:in `call'
+railties (5.1.5) lib/rails/rack/logger.rb:36:in `call_app'
+railties (5.1.5) lib/rails/rack/logger.rb:24:in `block in call'
+activesupport (5.1.5) lib/active_support/tagged_logging.rb:69:in `block in tagged'
+activesupport (5.1.5) lib/active_support/tagged_logging.rb:26:in `tagged'
+activesupport (5.1.5) lib/active_support/tagged_logging.rb:69:in `tagged'
+railties (5.1.5) lib/rails/rack/logger.rb:24:in `call'
+sprockets-rails (3.2.1) lib/sprockets/rails/quiet_assets.rb:13:in `call'
+actionpack (5.1.5) lib/action_dispatch/middleware/remote_ip.rb:79:in `call'
+actionpack (5.1.5) lib/action_dispatch/middleware/request_id.rb:25:in `call'
+rack (2.0.4) lib/rack/method_override.rb:22:in `call'
+rack (2.0.4) lib/rack/runtime.rb:22:in `call'
+activesupport (5.1.5) lib/active_support/cache/strategy/local_cache_middleware.rb:27:in `call'
+actionpack (5.1.5) lib/action_dispatch/middleware/executor.rb:12:in `call'
+actionpack (5.1.5) lib/action_dispatch/middleware/static.rb:125:in `call'
+rack (2.0.4) lib/rack/sendfile.rb:111:in `call'
+railties (5.1.5) lib/rails/engine.rb:522:in `call'
+puma (3.11.3) lib/puma/configuration.rb:225:in `call'
+puma (3.11.3) lib/puma/server.rb:624:in `handle_request'
+puma (3.11.3) lib/puma/server.rb:438:in `process_client'
+puma (3.11.3) lib/puma/server.rb:302:in `block in run'
+puma (3.11.3) lib/puma/thread_pool.rb:120:in `block in spawn_thread'
+  [1m[35m (0.4ms)[0m  [1m[35mSET NAMES utf8,  @@SESSION.sql_mode = CONCAT(CONCAT(@@sql_mode, ',STRICT_ALL_TABLES'), ',NO_AUTO_VALUE_ON_ZERO'),  @@SESSION.sql_auto_is_null = 0, @@SESSION.wait_timeout = 2147483[0m
+  [1m[35m (291.8ms)[0m  [1m[35mCREATE TABLE `schema_migrations` (`version` varchar(255) NOT NULL PRIMARY KEY) ENGINE=InnoDB[0m
+  [1m[35m (306.5ms)[0m  [1m[35mCREATE TABLE `ar_internal_metadata` (`key` varchar(255) NOT NULL PRIMARY KEY, `value` varchar(255), `created_at` datetime NOT NULL, `updated_at` datetime NOT NULL) ENGINE=InnoDB[0m
+  [1m[35m (0.4ms)[0m  [1m[34mSELECT GET_LOCK('4671394259554759170', 0)[0m
+  [1m[35m (0.4ms)[0m  [1m[34mSELECT `schema_migrations`.`version` FROM `schema_migrations` ORDER BY `schema_migrations`.`version` ASC[0m
+Migrating to CreateUsers (20180308170655)
+  [1m[35m (0.5ms)[0m  [1m[35mDROP TABLE IF EXISTS `users`[0m
+  [1m[35m (325.4ms)[0m  [1m[35mCREATE TABLE `users` (`id` bigint NOT NULL AUTO_INCREMENT PRIMARY KEY, `name` varchar(255), `created_at` datetime NOT NULL, `updated_at` datetime NOT NULL) ENGINE=InnoDB[0m
+  [1m[35m (0.7ms)[0m  [1m[35mBEGIN[0m
+  [1m[35mSQL (0.6ms)[0m  [1m[32mINSERT INTO `schema_migrations` (`version`) VALUES ('20180308170655')[0m
+  [1m[35m (286.0ms)[0m  [1m[35mCOMMIT[0m
+Migrating to CreateGroups (20180308170746)
+  [1m[35m (327.7ms)[0m  [1m[35mCREATE TABLE `groups` (`id` bigint NOT NULL AUTO_INCREMENT PRIMARY KEY, `name` varchar(255), `created_at` datetime NOT NULL, `updated_at` datetime NOT NULL) ENGINE=InnoDB[0m
+  [1m[35m (0.7ms)[0m  [1m[35mBEGIN[0m
+  [1m[35mSQL (0.9ms)[0m  [1m[32mINSERT INTO `schema_migrations` (`version`) VALUES ('20180308170746')[0m
+  [1m[35m (60.2ms)[0m  [1m[35mCOMMIT[0m
+Migrating to AddDeviseToUsers (20180308172625)
+  [1m[35m (439.6ms)[0m  [1m[35mALTER TABLE `users` ADD `email` varchar(255) DEFAULT '' NOT NULL[0m
+  [1m[35m (547.5ms)[0m  [1m[35mALTER TABLE `users` ADD `encrypted_password` varchar(255) DEFAULT '' NOT NULL[0m
+  [1m[35m (449.9ms)[0m  [1m[35mALTER TABLE `users` ADD `reset_password_token` varchar(255)[0m
+  [1m[35m (593.2ms)[0m  [1m[35mALTER TABLE `users` ADD `reset_password_sent_at` datetime[0m
+  [1m[35m (472.2ms)[0m  [1m[35mALTER TABLE `users` ADD `remember_created_at` datetime[0m
+  [1m[35m (537.0ms)[0m  [1m[35mALTER TABLE `users` ADD `sign_in_count` int DEFAULT 0 NOT NULL[0m
+  [1m[35m (494.7ms)[0m  [1m[35mALTER TABLE `users` ADD `current_sign_in_at` datetime[0m
+  [1m[35m (470.0ms)[0m  [1m[35mALTER TABLE `users` ADD `last_sign_in_at` datetime[0m
+  [1m[35m (537.8ms)[0m  [1m[35mALTER TABLE `users` ADD `current_sign_in_ip` varchar(255)[0m
+  [1m[35m (427.1ms)[0m  [1m[35mALTER TABLE `users` ADD `last_sign_in_ip` varchar(255)[0m
+  [1m[35m (267.1ms)[0m  [1m[35mCREATE UNIQUE INDEX `index_users_on_email`  ON `users` (`email`) [0m
+  [1m[35m (266.5ms)[0m  [1m[35mCREATE UNIQUE INDEX `index_users_on_reset_password_token`  ON `users` (`reset_password_token`) [0m
+  [1m[35m (0.3ms)[0m  [1m[35mBEGIN[0m
+  [1m[35mSQL (0.4ms)[0m  [1m[32mINSERT INTO `schema_migrations` (`version`) VALUES ('20180308172625')[0m
+  [1m[35m (41.7ms)[0m  [1m[35mCOMMIT[0m
+Migrating to CreateJoinTableUserGroup (20180309084858)
+  [1m[35m (376.4ms)[0m  [1m[35mCREATE TABLE `groups_users` (`user_id` bigint NOT NULL, `group_id` bigint NOT NULL,  INDEX `index_groups_users_on_user_id_and_group_id`  (`user_id`, `group_id`),  INDEX `index_groups_users_on_group_id_and_user_id`  (`group_id`, `user_id`)) ENGINE=InnoDB[0m
+  [1m[35m (0.5ms)[0m  [1m[35mBEGIN[0m
+  [1m[35mSQL (0.7ms)[0m  [1m[32mINSERT INTO `schema_migrations` (`version`) VALUES ('20180309084858')[0m
+  [1m[35m (29.8ms)[0m  [1m[35mCOMMIT[0m
+Migrating to CreateItems (20180309094528)
+  [1m[35m (396.1ms)[0m  [1m[35mCREATE TABLE `items` (`id` bigint NOT NULL AUTO_INCREMENT PRIMARY KEY, `user_id` bigint, `order_id` bigint, `quantity` int, `price` float, `created_at` datetime NOT NULL, `updated_at` datetime NOT NULL,  INDEX `index_items_on_user_id`  (`user_id`),  INDEX `index_items_on_order_id`  (`order_id`)) ENGINE=InnoDB[0m
+  [1m[35m (0.6ms)[0m  [1m[35mBEGIN[0m
+  [1m[35mSQL (0.8ms)[0m  [1m[32mINSERT INTO `schema_migrations` (`version`) VALUES ('20180309094528')[0m
+  [1m[35m (38.8ms)[0m  [1m[35mCOMMIT[0m
+Migrating to CreateUserNotifications (20180309100911)
+  [1m[35m (362.5ms)[0m  [1m[35mCREATE TABLE `user_notifications` (`id` bigint NOT NULL AUTO_INCREMENT PRIMARY KEY, `user_id` bigint, `notification_id` bigint,  INDEX `index_user_notifications_on_user_id`  (`user_id`),  INDEX `index_user_notifications_on_notification_id`  (`notification_id`)) ENGINE=InnoDB[0m
+  [1m[35m (0.4ms)[0m  [1m[35mBEGIN[0m
+  [1m[35mSQL (0.8ms)[0m  [1m[32mINSERT INTO `schema_migrations` (`version`) VALUES ('20180309100911')[0m
+  [1m[35m (62.0ms)[0m  [1m[35mCOMMIT[0m
+Migrating to CreateNotifications (20180309110417)
+  [1m[35m (355.7ms)[0m  [1m[35mCREATE TABLE `notifications` (`id` bigint NOT NULL AUTO_INCREMENT PRIMARY KEY, `message` varchar(255), `from` varchar(255), `typ` varchar(255), `orderId` int, `created_at` datetime NOT NULL, `updated_at` datetime NOT NULL) ENGINE=InnoDB[0m
+  [1m[35m (0.9ms)[0m  [1m[35mBEGIN[0m
+  [1m[35mSQL (0.8ms)[0m  [1m[32mINSERT INTO `schema_migrations` (`version`) VALUES ('20180309110417')[0m
+  [1m[35m (26.7ms)[0m  [1m[35mCOMMIT[0m
+Migrating to AddOmniauthToUsers (20180310175402)
+  [1m[35m (626.8ms)[0m  [1m[35mALTER TABLE `users` ADD `image` text[0m
+  [1m[35m (0.3ms)[0m  [1m[35mBEGIN[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO `schema_migrations` (`version`) VALUES ('20180310175402')[0m
+  [1m[35m (73.8ms)[0m  [1m[35mCOMMIT[0m
+Migrating to CreateFriendships (20180311083547)
+  [1m[35m (301.3ms)[0m  [1m[35mCREATE TABLE `friendships` (`id` bigint NOT NULL AUTO_INCREMENT PRIMARY KEY, `user_id` int, `friend_id` int, `created_at` datetime NOT NULL, `updated_at` datetime NOT NULL) ENGINE=InnoDB[0m
+  [1m[35m (0.9ms)[0m  [1m[35mBEGIN[0m
+  [1m[35mSQL (0.8ms)[0m  [1m[32mINSERT INTO `schema_migrations` (`version`) VALUES ('20180311083547')[0m
+  [1m[35m (26.3ms)[0m  [1m[35mCOMMIT[0m
+Migrating to AddUserIdToGroup (20180313013643)
+  [1m[35m (514.0ms)[0m  [1m[35mALTER TABLE `groups` ADD `user_id` int[0m
+  [1m[35m (0.3ms)[0m  [1m[35mBEGIN[0m
+  [1m[35mSQL (0.5ms)[0m  [1m[32mINSERT INTO `schema_migrations` (`version`) VALUES ('20180313013643')[0m
+  [1m[35m (41.8ms)[0m  [1m[35mCOMMIT[0m
+Migrating to CreateOrders (20180313030041)
+  [1m[35m (394.9ms)[0m  [1m[35mCREATE TABLE `orders` (`id` bigint NOT NULL AUTO_INCREMENT PRIMARY KEY, `resturant` varchar(255), `menu` varchar(255), `typ` varchar(255), `statu` varchar(255), `user_id` bigint, `created_at` datetime NOT NULL, `updated_at` datetime NOT NULL,  INDEX `index_orders_on_user_id`  (`user_id`), CONSTRAINT `fk_rails_f868b47f6a`
+FOREIGN KEY (`user_id`)
+  REFERENCES `users` (`id`)
+) ENGINE=InnoDB[0m
+  [1m[35m (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO `schema_migrations` (`version`) VALUES ('20180313030041')[0m
+  [1m[35m (31.5ms)[0m  [1m[35mCOMMIT[0m
+Migrating to AddCommentToItem (20180313040342)
+  [1m[35m (794.8ms)[0m  [1m[35mALTER TABLE `items` ADD `comment` text[0m
+  [1m[35m (0.3ms)[0m  [1m[35mBEGIN[0m
+  [1m[35mSQL (0.5ms)[0m  [1m[32mINSERT INTO `schema_migrations` (`version`) VALUES ('20180313040342')[0m
+  [1m[35m (30.8ms)[0m  [1m[35mCOMMIT[0m
+Migrating to AddFileNameToUser (20180313080150)
+  [1m[35m (533.9ms)[0m  [1m[35mALTER TABLE `users` ADD `image_file_name` varchar(255)[0m
+  [1m[35m (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[35mSQL (0.4ms)[0m  [1m[32mINSERT INTO `schema_migrations` (`version`) VALUES ('20180313080150')[0m
+  [1m[35m (42.6ms)[0m  [1m[35mCOMMIT[0m
+Migrating to AddImageContentTypeToUser (20180313080505)
+  [1m[35m (748.0ms)[0m  [1m[35mALTER TABLE `users` ADD `image_content_type` varchar(255)[0m
+  [1m[35m (626.9ms)[0m  [1m[35mALTER TABLE `users` ADD `image_file_size` int[0m
+  [1m[35m (616.9ms)[0m  [1m[35mALTER TABLE `users` ADD `image_updated_at` datetime[0m
+  [1m[35m (0.3ms)[0m  [1m[35mBEGIN[0m
+  [1m[35mSQL (0.4ms)[0m  [1m[32mINSERT INTO `schema_migrations` (`version`) VALUES ('20180313080505')[0m
+  [1m[35m (30.7ms)[0m  [1m[35mCOMMIT[0m
+Migrating to AddImageContentTypeToOrder (20180313092727)
+  [1m[35m (590.6ms)[0m  [1m[35mALTER TABLE `orders` ADD `menu_content_type` varchar(255)[0m
+  [1m[35m (627.9ms)[0m  [1m[35mALTER TABLE `orders` ADD `menu_file_name` varchar(255)[0m
+  [1m[35m (639.7ms)[0m  [1m[35mALTER TABLE `orders` ADD `menu_file_size` int[0m
+  [1m[35m (613.9ms)[0m  [1m[35mALTER TABLE `orders` ADD `menu_updated_at` datetime[0m
+  [1m[35m (0.3ms)[0m  [1m[35mBEGIN[0m
+  [1m[35mSQL (0.4ms)[0m  [1m[32mINSERT INTO `schema_migrations` (`version`) VALUES ('20180313092727')[0m
+  [1m[35m (31.1ms)[0m  [1m[35mCOMMIT[0m
+Migrating to AddNameToItem (20180313120140)
+  [1m[35m (624.5ms)[0m  [1m[35mALTER TABLE `items` ADD `name` varchar(255)[0m
+  [1m[35m (0.3ms)[0m  [1m[35mBEGIN[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO `schema_migrations` (`version`) VALUES ('20180313120140')[0m
+  [1m[35m (80.7ms)[0m  [1m[35mCOMMIT[0m
+Migrating to CreateFriendOrders (20180314144333)
+  [1m[35m (447.1ms)[0m  [1m[35mCREATE TABLE `friend_orders` (`id` bigint NOT NULL AUTO_INCREMENT PRIMARY KEY, `order_id` bigint, `friend_id` int, `created_at` datetime NOT NULL, `updated_at` datetime NOT NULL,  INDEX `index_friend_orders_on_order_id`  (`order_id`), CONSTRAINT `fk_rails_8553c338c9`
+FOREIGN KEY (`order_id`)
+  REFERENCES `orders` (`id`)
+) ENGINE=InnoDB[0m
+  [1m[35m (0.3ms)[0m  [1m[35mBEGIN[0m
+  [1m[35mSQL (0.5ms)[0m  [1m[32mINSERT INTO `schema_migrations` (`version`) VALUES ('20180314144333')[0m
+  [1m[35m (30.6ms)[0m  [1m[35mCOMMIT[0m
+Migrating to RemoveClientFromUsers (20180318091205)
+  [1m[35m (0.9ms)[0m  [1m[35mBEGIN[0m
+  [1m[35mSQL (0.6ms)[0m  [1m[32mINSERT INTO `schema_migrations` (`version`) VALUES ('20180318091205')[0m
+  [1m[35m (25.8ms)[0m  [1m[35mCOMMIT[0m
+Migrating to AddAuthTokenToUsers (20180320151727)
+  [1m[35m (680.5ms)[0m  [1m[35mALTER TABLE `users` ADD `auth_token` varchar(255)[0m
+  [1m[35m (0.3ms)[0m  [1m[35mBEGIN[0m
+  [1m[35mSQL (0.5ms)[0m  [1m[32mINSERT INTO `schema_migrations` (`version`) VALUES ('20180320151727')[0m
+  [1m[35m (41.5ms)[0m  [1m[35mCOMMIT[0m
+Migrating to AddPasswordResetToUsers (20180320151750)
+  [1m[35m (499.6ms)[0m  [1m[35mALTER TABLE `users` ADD `password_reset_token` varchar(255)[0m
+  [1m[35m (695.5ms)[0m  [1m[35mALTER TABLE `users` ADD `password_reset_sent_at` datetime[0m
+  [1m[35m (0.3ms)[0m  [1m[35mBEGIN[0m
+  [1m[35mSQL (0.5ms)[0m  [1m[32mINSERT INTO `schema_migrations` (`version`) VALUES ('20180320151750')[0m
+  [1m[35m (41.3ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mActiveRecord::InternalMetadata Load (1.0ms)[0m  [1m[34mSELECT  `ar_internal_metadata`.* FROM `ar_internal_metadata` WHERE `ar_internal_metadata`.`key` = 'environment' LIMIT 1[0m
+  [1m[35m (0.5ms)[0m  [1m[35mBEGIN[0m
+  [1m[35mSQL (0.8ms)[0m  [1m[32mINSERT INTO `ar_internal_metadata` (`key`, `value`, `created_at`, `updated_at`) VALUES ('environment', 'development', '2018-04-01 11:37:40', '2018-04-01 11:37:40')[0m
+  [1m[35m (37.1ms)[0m  [1m[35mCOMMIT[0m
+  [1m[35m (0.8ms)[0m  [1m[34mSELECT RELEASE_LOCK('4671394259554759170')[0m
+  [1m[35m (0.5ms)[0m  [1m[34mSELECT `schema_migrations`.`version` FROM `schema_migrations` ORDER BY `schema_migrations`.`version` ASC[0m
+Started GET "/" for 172.19.0.1 at 2018-04-01 11:37:53 +0000
+Cannot render console from 172.19.0.1! Allowed networks: 127.0.0.1, ::1, 127.0.0.0/127.255.255.255
+  [1m[35m (0.5ms)[0m  [1m[35mSET NAMES utf8,  @@SESSION.sql_mode = CONCAT(CONCAT(@@sql_mode, ',STRICT_ALL_TABLES'), ',NO_AUTO_VALUE_ON_ZERO'),  @@SESSION.sql_auto_is_null = 0, @@SESSION.wait_timeout = 2147483[0m
+  [1m[35m (0.3ms)[0m  [1m[34mSELECT `schema_migrations`.`version` FROM `schema_migrations` ORDER BY `schema_migrations`.`version` ASC[0m
+Processing by HomeController#index as HTML
+Completed 401 Unauthorized in 40ms (ActiveRecord: 0.0ms)
+
+
+Started GET "/users/sign_in" for 172.19.0.1 at 2018-04-01 11:37:53 +0000
+Cannot render console from 172.19.0.1! Allowed networks: 127.0.0.1, ::1, 127.0.0.0/127.255.255.255
+Processing by Devise::SessionsController#new as HTML
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (5.5ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (134.1ms)
+Completed 200 OK in 2762ms (Views: 2692.0ms | ActiveRecord: 3.1ms)
+
+
+Started GET "/" for 172.19.0.1 at 2018-04-01 12:18:23 +0000
+Cannot render console from 172.19.0.1! Allowed networks: 127.0.0.1, ::1, 127.0.0.0/127.255.255.255
+  [1m[35m (74.7ms)[0m  [1m[35mSET NAMES utf8,  @@SESSION.sql_mode = CONCAT(CONCAT(@@sql_mode, ',STRICT_ALL_TABLES'), ',NO_AUTO_VALUE_ON_ZERO'),  @@SESSION.sql_auto_is_null = 0, @@SESSION.wait_timeout = 2147483[0m
+  [1m[35m (38.9ms)[0m  [1m[34mSELECT `schema_migrations`.`version` FROM `schema_migrations` ORDER BY `schema_migrations`.`version` ASC[0m
+Processing by HomeController#index as HTML
+Completed 401 Unauthorized in 28ms (ActiveRecord: 0.0ms)
+
+
+Started GET "/users/sign_in" for 172.19.0.1 at 2018-04-01 12:18:24 +0000
+Cannot render console from 172.19.0.1! Allowed networks: 127.0.0.1, ::1, 127.0.0.0/127.255.255.255
+Processing by Devise::SessionsController#new as HTML
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (3.7ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (89.0ms)
+Completed 200 OK in 965ms (Views: 810.9ms | ActiveRecord: 100.2ms)
+
+
+Started GET "/" for 172.19.0.4 at 2018-04-01 13:12:09 +0000
+Cannot render console from 172.19.0.1! Allowed networks: 127.0.0.1, ::1, 127.0.0.0/127.255.255.255
+  [1m[35m (94.9ms)[0m  [1m[35mSET NAMES utf8,  @@SESSION.sql_mode = CONCAT(CONCAT(@@sql_mode, ',STRICT_ALL_TABLES'), ',NO_AUTO_VALUE_ON_ZERO'),  @@SESSION.sql_auto_is_null = 0, @@SESSION.wait_timeout = 2147483[0m
+  [1m[35m (4.6ms)[0m  [1m[34mSELECT `schema_migrations`.`version` FROM `schema_migrations` ORDER BY `schema_migrations`.`version` ASC[0m
+Processing by HomeController#index as HTML
+Completed 401 Unauthorized in 28ms (ActiveRecord: 0.0ms)
+
+
+Started GET "/users/sign_in" for 172.19.0.4 at 2018-04-01 13:12:10 +0000
+Cannot render console from 172.19.0.1! Allowed networks: 127.0.0.1, ::1, 127.0.0.0/127.255.255.255
+Processing by Devise::SessionsController#new as HTML
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (2.9ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (47.4ms)
+Completed 200 OK in 871ms (Views: 782.1ms | ActiveRecord: 49.9ms)
+
+
+Started GET "/users/sign_in" for 172.19.0.4 at 2018-04-01 13:14:24 +0000
+Cannot render console from 172.19.0.1! Allowed networks: 127.0.0.1, ::1, 127.0.0.0/127.255.255.255
+Processing by Devise::SessionsController#new as HTML
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (2.1ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (10.5ms)
+Completed 200 OK in 173ms (Views: 171.1ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/users/sign_in" for 172.19.0.4 at 2018-04-01 13:14:25 +0000
+Cannot render console from 172.19.0.1! Allowed networks: 127.0.0.1, ::1, 127.0.0.0/127.255.255.255
+Processing by Devise::SessionsController#new as HTML
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (2.1ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (11.9ms)
+Completed 200 OK in 165ms (Views: 162.5ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/users/sign_in" for 172.19.0.4 at 2018-04-01 13:56:23 +0000
+Cannot render console from 172.19.0.1! Allowed networks: 127.0.0.1, ::1, 127.0.0.0/127.255.255.255
+  [1m[35m (114.1ms)[0m  [1m[35mSET NAMES utf8,  @@SESSION.sql_mode = CONCAT(CONCAT(@@sql_mode, ',STRICT_ALL_TABLES'), ',NO_AUTO_VALUE_ON_ZERO'),  @@SESSION.sql_auto_is_null = 0, @@SESSION.wait_timeout = 2147483[0m
+  [1m[35m (12.3ms)[0m  [1m[34mSELECT `schema_migrations`.`version` FROM `schema_migrations` ORDER BY `schema_migrations`.`version` ASC[0m
+Processing by Devise::SessionsController#new as HTML
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (4.2ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (254.2ms)
+Completed 200 OK in 1068ms (Views: 955.4ms | ActiveRecord: 39.5ms)
+
+
+Started GET "/users/sign_in" for 172.19.0.4 at 2018-04-01 13:56:28 +0000
+Cannot render console from 172.19.0.1! Allowed networks: 127.0.0.1, ::1, 127.0.0.0/127.255.255.255
+Processing by Devise::SessionsController#new as HTML
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (2.3ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (11.2ms)
+Completed 200 OK in 183ms (Views: 180.6ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/users/sign_up" for 172.19.0.4 at 2018-04-01 13:56:39 +0000
+Cannot render console from 172.19.0.1! Allowed networks: 127.0.0.1, ::1, 127.0.0.0/127.255.255.255
+Processing by Devise::RegistrationsController#new as HTML
+  Rendering devise/registrations/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (5.1ms)
+  Rendered devise/registrations/new.html.erb within layouts/application (92.9ms)
+Completed 200 OK in 291ms (Views: 289.3ms | ActiveRecord: 0.0ms)
+
+
+Started POST "/users" for 172.19.0.4 at 2018-04-01 13:57:00 +0000
+Cannot render console from 172.19.0.1! Allowed networks: 127.0.0.1, ::1, 127.0.0.0/127.255.255.255
+Processing by Devise::RegistrationsController#create as HTML
+  Parameters: {"utf8"=>"✓", "authenticity_token"=>"jJ64F5dnqYHw94kZa6ZztekJ5foAW6IlyRwdfpXAxKTXr4QvGokO6+wo93DBtU1ujda7lu+/Bz2WP0ltvbnf1g==", "user"=>{"name"=>"ahmed", "email"=>"a@g", "password"=>"[FILTERED]", "password_confirmation"=>"[FILTERED]"}, "commit"=>"Sign up"}
+  [1m[35m (0.3ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mUser Exists (36.6ms)[0m  [1m[34mSELECT  1 AS one FROM `users` WHERE `users`.`email` = BINARY 'a@g' LIMIT 1[0m
+  [1m[36mUser Exists (44.5ms)[0m  [1m[34mSELECT  1 AS one FROM `users` WHERE `users`.`auth_token` = 'mfDAR8OlQAzgeg7F1wEumg' LIMIT 1[0m
+  [1m[35mSQL (23.0ms)[0m  [1m[32mINSERT INTO `users` (`name`, `created_at`, `updated_at`, `email`, `encrypted_password`, `auth_token`) VALUES ('ahmed', '2018-04-01 13:57:01', '2018-04-01 13:57:01', 'a@g', '$2a$11$ekpPT.m1I/dUQ19/cQv3NeDhMSRGTnurz.8wBEDnmW3gGWMWLyttS', 'mfDAR8OlQAzgeg7F1wEumg')[0m
+  [1m[35m (121.9ms)[0m  [1m[35mCOMMIT[0m
+  [1m[35m (0.6ms)[0m  [1m[35mBEGIN[0m
+  [1m[35mSQL (212.7ms)[0m  [1m[33mUPDATE `users` SET `sign_in_count` = 1, `current_sign_in_at` = '2018-04-01 13:57:01', `last_sign_in_at` = '2018-04-01 13:57:01', `current_sign_in_ip` = '172.19.0.4', `last_sign_in_ip` = '172.19.0.4' WHERE `users`.`id` = 1[0m
+  [1m[35m (75.5ms)[0m  [1m[35mCOMMIT[0m
+Redirected to http://localhost:8080/
+Completed 302 Found in 1062ms (ActiveRecord: 515.1ms)
+
+
+Started GET "/" for 172.19.0.4 at 2018-04-01 13:57:02 +0000
+Cannot render console from 172.19.0.1! Allowed networks: 127.0.0.1, ::1, 127.0.0.0/127.255.255.255
+Processing by HomeController#index as HTML
+  [1m[36mUser Load (0.6ms)[0m  [1m[34mSELECT  `users`.* FROM `users` WHERE `users`.`id` = 1 ORDER BY `users`.`id` ASC LIMIT 1[0m
+  [1m[35m (141.2ms)[0m  [1m[34mselect notifications.id, notifications.message, notifications.from, notifications.typ, notifications.orderId, notifications.created_at from notifications, user_notifications where notifications.id = user_notifications.notification_id and user_id = 1 order by created_at desc[0m
+  [1m[36mUser Load (51.3ms)[0m  [1m[34mSELECT `users`.* FROM `users` INNER JOIN `friendships` ON `users`.`id` = `friendships`.`friend_id` WHERE `friendships`.`user_id` = 1[0m
+  Rendering home/index.html.erb within layouts/application
+  [1m[36mOrder Load (0.7ms)[0m  [1m[34mSELECT  `orders`.* FROM `orders` WHERE `orders`.`user_id` = 1 ORDER BY `orders`.`created_at` DESC LIMIT 4[0m
+  Rendered home/index.html.erb within layouts/application (3.4ms)
+Completed 200 OK in 758ms (Views: 158.0ms | ActiveRecord: 319.7ms)
+
+
+Started GET "/images/thumb/missing.png" for 172.19.0.4 at 2018-04-01 13:57:03 +0000
+Cannot render console from 172.19.0.1! Allowed networks: 127.0.0.1, ::1, 127.0.0.0/127.255.255.255
+  
+ActionController::RoutingError (No route matches [GET] "/images/thumb/missing.png"):
+  
+actionpack (5.1.5) lib/action_dispatch/middleware/debug_exceptions.rb:63:in `call'
+web-console (3.5.1) lib/web_console/middleware.rb:135:in `call_app'
+web-console (3.5.1) lib/web_console/middleware.rb:20:in `block in call'
+web-console (3.5.1) lib/web_console/middleware.rb:18:in `catch'
+web-console (3.5.1) lib/web_console/middleware.rb:18:in `call'
+actionpack (5.1.5) lib/action_dispatch/middleware/show_exceptions.rb:31:in `call'
+railties (5.1.5) lib/rails/rack/logger.rb:36:in `call_app'
+railties (5.1.5) lib/rails/rack/logger.rb:24:in `block in call'
+activesupport (5.1.5) lib/active_support/tagged_logging.rb:69:in `block in tagged'
+activesupport (5.1.5) lib/active_support/tagged_logging.rb:26:in `tagged'
+activesupport (5.1.5) lib/active_support/tagged_logging.rb:69:in `tagged'
+railties (5.1.5) lib/rails/rack/logger.rb:24:in `call'
+sprockets-rails (3.2.1) lib/sprockets/rails/quiet_assets.rb:13:in `call'
+actionpack (5.1.5) lib/action_dispatch/middleware/remote_ip.rb:79:in `call'
+actionpack (5.1.5) lib/action_dispatch/middleware/request_id.rb:25:in `call'
+rack (2.0.4) lib/rack/method_override.rb:22:in `call'
+rack (2.0.4) lib/rack/runtime.rb:22:in `call'
+activesupport (5.1.5) lib/active_support/cache/strategy/local_cache_middleware.rb:27:in `call'
+actionpack (5.1.5) lib/action_dispatch/middleware/executor.rb:12:in `call'
+actionpack (5.1.5) lib/action_dispatch/middleware/static.rb:125:in `call'
+rack (2.0.4) lib/rack/sendfile.rb:111:in `call'
+railties (5.1.5) lib/rails/engine.rb:522:in `call'
+puma (3.11.3) lib/puma/configuration.rb:225:in `call'
+puma (3.11.3) lib/puma/server.rb:624:in `handle_request'
+puma (3.11.3) lib/puma/server.rb:438:in `process_client'
+puma (3.11.3) lib/puma/server.rb:302:in `block in run'
+puma (3.11.3) lib/puma/thread_pool.rb:120:in `block in spawn_thread'
+Started GET "/friendships" for 172.19.0.4 at 2018-04-01 13:57:19 +0000
+Cannot render console from 172.19.0.1! Allowed networks: 127.0.0.1, ::1, 127.0.0.0/127.255.255.255
+Processing by FriendshipsController#index as HTML
+  [1m[36mUser Load (0.8ms)[0m  [1m[34mSELECT  `users`.* FROM `users` WHERE `users`.`id` = 1 ORDER BY `users`.`id` ASC LIMIT 1[0m
+  [1m[35m (0.7ms)[0m  [1m[34mselect notifications.id, notifications.message, notifications.from, notifications.typ, notifications.orderId, notifications.created_at from notifications, user_notifications where notifications.id = user_notifications.notification_id and user_id = 1 order by created_at desc[0m
+  Rendering friendships/index.html.erb within layouts/application
+  Rendered friendships/_form.html.erb (6.5ms)
+  [1m[36mFriendship Load (0.5ms)[0m  [1m[34mSELECT `friendships`.* FROM `friendships` WHERE `friendships`.`user_id` = 1[0m
+  Rendered friendships/index.html.erb within layouts/application (12.8ms)
+Completed 200 OK in 143ms (Views: 122.4ms | ActiveRecord: 2.0ms)
+
+
+Started GET "/images/thumb/missing.png" for 172.19.0.4 at 2018-04-01 13:57:20 +0000
+Cannot render console from 172.19.0.1! Allowed networks: 127.0.0.1, ::1, 127.0.0.0/127.255.255.255
+  
+ActionController::RoutingError (No route matches [GET] "/images/thumb/missing.png"):
+  
+actionpack (5.1.5) lib/action_dispatch/middleware/debug_exceptions.rb:63:in `call'
+web-console (3.5.1) lib/web_console/middleware.rb:135:in `call_app'
+web-console (3.5.1) lib/web_console/middleware.rb:20:in `block in call'
+web-console (3.5.1) lib/web_console/middleware.rb:18:in `catch'
+web-console (3.5.1) lib/web_console/middleware.rb:18:in `call'
+actionpack (5.1.5) lib/action_dispatch/middleware/show_exceptions.rb:31:in `call'
+railties (5.1.5) lib/rails/rack/logger.rb:36:in `call_app'
+railties (5.1.5) lib/rails/rack/logger.rb:24:in `block in call'
+activesupport (5.1.5) lib/active_support/tagged_logging.rb:69:in `block in tagged'
+activesupport (5.1.5) lib/active_support/tagged_logging.rb:26:in `tagged'
+activesupport (5.1.5) lib/active_support/tagged_logging.rb:69:in `tagged'
+railties (5.1.5) lib/rails/rack/logger.rb:24:in `call'
+sprockets-rails (3.2.1) lib/sprockets/rails/quiet_assets.rb:13:in `call'
+actionpack (5.1.5) lib/action_dispatch/middleware/remote_ip.rb:79:in `call'
+actionpack (5.1.5) lib/action_dispatch/middleware/request_id.rb:25:in `call'
+rack (2.0.4) lib/rack/method_override.rb:22:in `call'
+rack (2.0.4) lib/rack/runtime.rb:22:in `call'
+activesupport (5.1.5) lib/active_support/cache/strategy/local_cache_middleware.rb:27:in `call'
+actionpack (5.1.5) lib/action_dispatch/middleware/executor.rb:12:in `call'
+actionpack (5.1.5) lib/action_dispatch/middleware/static.rb:125:in `call'
+rack (2.0.4) lib/rack/sendfile.rb:111:in `call'
+railties (5.1.5) lib/rails/engine.rb:522:in `call'
+puma (3.11.3) lib/puma/configuration.rb:225:in `call'
+puma (3.11.3) lib/puma/server.rb:624:in `handle_request'
+puma (3.11.3) lib/puma/server.rb:438:in `process_client'
+puma (3.11.3) lib/puma/server.rb:302:in `block in run'
+puma (3.11.3) lib/puma/thread_pool.rb:120:in `block in spawn_thread'
+Started GET "/groups" for 172.19.0.4 at 2018-04-01 13:57:21 +0000
+Cannot render console from 172.19.0.1! Allowed networks: 127.0.0.1, ::1, 127.0.0.0/127.255.255.255
+Processing by GroupsController#index as HTML
+  [1m[36mUser Load (0.5ms)[0m  [1m[34mSELECT  `users`.* FROM `users` WHERE `users`.`id` = 1 ORDER BY `users`.`id` ASC LIMIT 1[0m
+  [1m[35m (0.6ms)[0m  [1m[34mselect notifications.id, notifications.message, notifications.from, notifications.typ, notifications.orderId, notifications.created_at from notifications, user_notifications where notifications.id = user_notifications.notification_id and user_id = 1 order by created_at desc[0m
+  Rendering groups/index.html.erb within layouts/application
+  [1m[36mGroup Load (0.6ms)[0m  [1m[34mSELECT `groups`.* FROM `groups` WHERE `groups`.`user_id` = 1[0m
+  Rendered groups/index.html.erb within layouts/application (3.1ms)
+Completed 200 OK in 182ms (Views: 129.0ms | ActiveRecord: 21.0ms)
+
+
+Started GET "/ff" for 172.19.0.4 at 2018-04-01 13:57:21 +0000
+Started GET "/images/thumb/missing.png" for 172.19.0.4 at 2018-04-01 13:57:21 +0000
+Cannot render console from 172.19.0.1! Allowed networks: 127.0.0.1, ::1, 127.0.0.0/127.255.255.255
+Cannot render console from 172.19.0.1! Allowed networks: 127.0.0.1, ::1, 127.0.0.0/127.255.255.255
+  
+ActionController::RoutingError (No route matches [GET] "/images/thumb/missing.png"):
+  
+actionpack (5.1.5) lib/action_dispatch/middleware/debug_exceptions.rb:63:in `call'
+web-console (3.5.1) lib/web_console/middleware.rb:135:in `call_app'
+web-console (3.5.1) lib/web_console/middleware.rb:20:in `block in call'
+web-console (3.5.1) lib/web_console/middleware.rb:18:in `catch'
+web-console (3.5.1) lib/web_console/middleware.rb:18:in `call'
+actionpack (5.1.5) lib/action_dispatch/middleware/show_exceptions.rb:31:in `call'
+railties (5.1.5) lib/rails/rack/logger.rb:36:in `call_app'
+railties (5.1.5) lib/rails/rack/logger.rb:24:in `block in call'
+activesupport (5.1.5) lib/active_support/tagged_logging.rb:69:in `block in tagged'
+activesupport (5.1.5) lib/active_support/tagged_logging.rb:26:in `tagged'
+activesupport (5.1.5) lib/active_support/tagged_logging.rb:69:in `tagged'
+railties (5.1.5) lib/rails/rack/logger.rb:24:in `call'
+sprockets-rails (3.2.1) lib/sprockets/rails/quiet_assets.rb:13:in `call'
+actionpack (5.1.5) lib/action_dispatch/middleware/remote_ip.rb:79:in `call'
+actionpack (5.1.5) lib/action_dispatch/middleware/request_id.rb:25:in `call'
+rack (2.0.4) lib/rack/method_override.rb:22:in `call'
+rack (2.0.4) lib/rack/runtime.rb:22:in `call'
+activesupport (5.1.5) lib/active_support/cache/strategy/local_cache_middleware.rb:27:in `call'
+actionpack (5.1.5) lib/action_dispatch/middleware/executor.rb:12:in `call'
+actionpack (5.1.5) lib/action_dispatch/middleware/static.rb:125:in `call'
+rack (2.0.4) lib/rack/sendfile.rb:111:in `call'
+railties (5.1.5) lib/rails/engine.rb:522:in `call'
+puma (3.11.3) lib/puma/configuration.rb:225:in `call'
+puma (3.11.3) lib/puma/server.rb:624:in `handle_request'
+puma (3.11.3) lib/puma/server.rb:438:in `process_client'
+puma (3.11.3) lib/puma/server.rb:302:in `block in run'
+puma (3.11.3) lib/puma/thread_pool.rb:120:in `block in spawn_thread'
+  
+ActionController::RoutingError (No route matches [GET] "/ff"):
+  
+actionpack (5.1.5) lib/action_dispatch/middleware/debug_exceptions.rb:63:in `call'
+web-console (3.5.1) lib/web_console/middleware.rb:135:in `call_app'
+web-console (3.5.1) lib/web_console/middleware.rb:20:in `block in call'
+web-console (3.5.1) lib/web_console/middleware.rb:18:in `catch'
+web-console (3.5.1) lib/web_console/middleware.rb:18:in `call'
+actionpack (5.1.5) lib/action_dispatch/middleware/show_exceptions.rb:31:in `call'
+railties (5.1.5) lib/rails/rack/logger.rb:36:in `call_app'
+railties (5.1.5) lib/rails/rack/logger.rb:24:in `block in call'
+activesupport (5.1.5) lib/active_support/tagged_logging.rb:69:in `block in tagged'
+activesupport (5.1.5) lib/active_support/tagged_logging.rb:26:in `tagged'
+activesupport (5.1.5) lib/active_support/tagged_logging.rb:69:in `tagged'
+railties (5.1.5) lib/rails/rack/logger.rb:24:in `call'
+sprockets-rails (3.2.1) lib/sprockets/rails/quiet_assets.rb:13:in `call'
+actionpack (5.1.5) lib/action_dispatch/middleware/remote_ip.rb:79:in `call'
+actionpack (5.1.5) lib/action_dispatch/middleware/request_id.rb:25:in `call'
+rack (2.0.4) lib/rack/method_override.rb:22:in `call'
+rack (2.0.4) lib/rack/runtime.rb:22:in `call'
+activesupport (5.1.5) lib/active_support/cache/strategy/local_cache_middleware.rb:27:in `call'
+actionpack (5.1.5) lib/action_dispatch/middleware/executor.rb:12:in `call'
+actionpack (5.1.5) lib/action_dispatch/middleware/static.rb:125:in `call'
+rack (2.0.4) lib/rack/sendfile.rb:111:in `call'
+railties (5.1.5) lib/rails/engine.rb:522:in `call'
+puma (3.11.3) lib/puma/configuration.rb:225:in `call'
+puma (3.11.3) lib/puma/server.rb:624:in `handle_request'
+puma (3.11.3) lib/puma/server.rb:438:in `process_client'
+puma (3.11.3) lib/puma/server.rb:302:in `block in run'
+puma (3.11.3) lib/puma/thread_pool.rb:120:in `block in spawn_thread'
+Started GET "/friendships" for 172.19.0.4 at 2018-04-01 13:57:25 +0000
+Cannot render console from 172.19.0.1! Allowed networks: 127.0.0.1, ::1, 127.0.0.0/127.255.255.255
+Processing by FriendshipsController#index as HTML
+  [1m[36mUser Load (0.6ms)[0m  [1m[34mSELECT  `users`.* FROM `users` WHERE `users`.`id` = 1 ORDER BY `users`.`id` ASC LIMIT 1[0m
+  [1m[35m (0.6ms)[0m  [1m[34mselect notifications.id, notifications.message, notifications.from, notifications.typ, notifications.orderId, notifications.created_at from notifications, user_notifications where notifications.id = user_notifications.notification_id and user_id = 1 order by created_at desc[0m
+  Rendering friendships/index.html.erb within layouts/application
+  Rendered friendships/_form.html.erb (3.5ms)
+  [1m[36mFriendship Load (0.6ms)[0m  [1m[34mSELECT `friendships`.* FROM `friendships` WHERE `friendships`.`user_id` = 1[0m
+  Rendered friendships/index.html.erb within layouts/application (12.7ms)
+Completed 200 OK in 141ms (Views: 130.5ms | ActiveRecord: 1.8ms)
+
+
+Started GET "/images/thumb/missing.png" for 172.19.0.4 at 2018-04-01 13:57:25 +0000
+Cannot render console from 172.19.0.1! Allowed networks: 127.0.0.1, ::1, 127.0.0.0/127.255.255.255
+  
+ActionController::RoutingError (No route matches [GET] "/images/thumb/missing.png"):
+  
+actionpack (5.1.5) lib/action_dispatch/middleware/debug_exceptions.rb:63:in `call'
+web-console (3.5.1) lib/web_console/middleware.rb:135:in `call_app'
+web-console (3.5.1) lib/web_console/middleware.rb:20:in `block in call'
+web-console (3.5.1) lib/web_console/middleware.rb:18:in `catch'
+web-console (3.5.1) lib/web_console/middleware.rb:18:in `call'
+actionpack (5.1.5) lib/action_dispatch/middleware/show_exceptions.rb:31:in `call'
+railties (5.1.5) lib/rails/rack/logger.rb:36:in `call_app'
+railties (5.1.5) lib/rails/rack/logger.rb:24:in `block in call'
+activesupport (5.1.5) lib/active_support/tagged_logging.rb:69:in `block in tagged'
+activesupport (5.1.5) lib/active_support/tagged_logging.rb:26:in `tagged'
+activesupport (5.1.5) lib/active_support/tagged_logging.rb:69:in `tagged'
+railties (5.1.5) lib/rails/rack/logger.rb:24:in `call'
+sprockets-rails (3.2.1) lib/sprockets/rails/quiet_assets.rb:13:in `call'
+actionpack (5.1.5) lib/action_dispatch/middleware/remote_ip.rb:79:in `call'
+actionpack (5.1.5) lib/action_dispatch/middleware/request_id.rb:25:in `call'
+rack (2.0.4) lib/rack/method_override.rb:22:in `call'
+rack (2.0.4) lib/rack/runtime.rb:22:in `call'
+activesupport (5.1.5) lib/active_support/cache/strategy/local_cache_middleware.rb:27:in `call'
+actionpack (5.1.5) lib/action_dispatch/middleware/executor.rb:12:in `call'
+actionpack (5.1.5) lib/action_dispatch/middleware/static.rb:125:in `call'
+rack (2.0.4) lib/rack/sendfile.rb:111:in `call'
+railties (5.1.5) lib/rails/engine.rb:522:in `call'
+puma (3.11.3) lib/puma/configuration.rb:225:in `call'
+puma (3.11.3) lib/puma/server.rb:624:in `handle_request'
+puma (3.11.3) lib/puma/server.rb:438:in `process_client'
+puma (3.11.3) lib/puma/server.rb:302:in `block in run'
+puma (3.11.3) lib/puma/thread_pool.rb:120:in `block in spawn_thread'
+Started GET "/orders" for 172.19.0.4 at 2018-04-01 13:57:29 +0000
+Cannot render console from 172.19.0.1! Allowed networks: 127.0.0.1, ::1, 127.0.0.0/127.255.255.255
+Processing by OrdersController#index as HTML
+  [1m[36mUser Load (0.4ms)[0m  [1m[34mSELECT  `users`.* FROM `users` WHERE `users`.`id` = 1 ORDER BY `users`.`id` ASC LIMIT 1[0m
+  [1m[35m (0.5ms)[0m  [1m[34mselect notifications.id, notifications.message, notifications.from, notifications.typ, notifications.orderId, notifications.created_at from notifications, user_notifications where notifications.id = user_notifications.notification_id and user_id = 1 order by created_at desc[0m
+  Rendering orders/index.html.erb within layouts/application
+  [1m[36mOrder Load (0.6ms)[0m  [1m[34mSELECT  `orders`.* FROM `orders` WHERE `orders`.`user_id` = 1 LIMIT 3 OFFSET 0[0m
+  [1m[36mOrder Load (0.6ms)[0m  [1m[34mSELECT  `orders`.* FROM `orders` INNER JOIN `friend_orders` ON `friend_orders`.`order_id` = `orders`.`id` WHERE `friend_orders`.`friend_id` = 1 LIMIT 3 OFFSET 0[0m
+  Rendered orders/index.html.erb within layouts/application (7.0ms)
+Completed 200 OK in 204ms (Views: 148.8ms | ActiveRecord: 14.7ms)
+
+
+Started GET "/images/thumb/missing.png" for 172.19.0.4 at 2018-04-01 13:57:29 +0000
+Cannot render console from 172.19.0.1! Allowed networks: 127.0.0.1, ::1, 127.0.0.0/127.255.255.255
+  
+ActionController::RoutingError (No route matches [GET] "/images/thumb/missing.png"):
+  
+actionpack (5.1.5) lib/action_dispatch/middleware/debug_exceptions.rb:63:in `call'
+web-console (3.5.1) lib/web_console/middleware.rb:135:in `call_app'
+web-console (3.5.1) lib/web_console/middleware.rb:20:in `block in call'
+web-console (3.5.1) lib/web_console/middleware.rb:18:in `catch'
+web-console (3.5.1) lib/web_console/middleware.rb:18:in `call'
+actionpack (5.1.5) lib/action_dispatch/middleware/show_exceptions.rb:31:in `call'
+railties (5.1.5) lib/rails/rack/logger.rb:36:in `call_app'
+railties (5.1.5) lib/rails/rack/logger.rb:24:in `block in call'
+activesupport (5.1.5) lib/active_support/tagged_logging.rb:69:in `block in tagged'
+activesupport (5.1.5) lib/active_support/tagged_logging.rb:26:in `tagged'
+activesupport (5.1.5) lib/active_support/tagged_logging.rb:69:in `tagged'
+railties (5.1.5) lib/rails/rack/logger.rb:24:in `call'
+sprockets-rails (3.2.1) lib/sprockets/rails/quiet_assets.rb:13:in `call'
+actionpack (5.1.5) lib/action_dispatch/middleware/remote_ip.rb:79:in `call'
+actionpack (5.1.5) lib/action_dispatch/middleware/request_id.rb:25:in `call'
+rack (2.0.4) lib/rack/method_override.rb:22:in `call'
+rack (2.0.4) lib/rack/runtime.rb:22:in `call'
+activesupport (5.1.5) lib/active_support/cache/strategy/local_cache_middleware.rb:27:in `call'
+actionpack (5.1.5) lib/action_dispatch/middleware/executor.rb:12:in `call'
+actionpack (5.1.5) lib/action_dispatch/middleware/static.rb:125:in `call'
+rack (2.0.4) lib/rack/sendfile.rb:111:in `call'
+railties (5.1.5) lib/rails/engine.rb:522:in `call'
+puma (3.11.3) lib/puma/configuration.rb:225:in `call'
+puma (3.11.3) lib/puma/server.rb:624:in `handle_request'
+puma (3.11.3) lib/puma/server.rb:438:in `process_client'
+puma (3.11.3) lib/puma/server.rb:302:in `block in run'
+puma (3.11.3) lib/puma/thread_pool.rb:120:in `block in spawn_thread'
+Started GET "/groups" for 172.19.0.4 at 2018-04-01 13:57:33 +0000
+Cannot render console from 172.19.0.1! Allowed networks: 127.0.0.1, ::1, 127.0.0.0/127.255.255.255
+Processing by GroupsController#index as HTML
+  [1m[36mUser Load (0.6ms)[0m  [1m[34mSELECT  `users`.* FROM `users` WHERE `users`.`id` = 1 ORDER BY `users`.`id` ASC LIMIT 1[0m
+  [1m[35m (0.6ms)[0m  [1m[34mselect notifications.id, notifications.message, notifications.from, notifications.typ, notifications.orderId, notifications.created_at from notifications, user_notifications where notifications.id = user_notifications.notification_id and user_id = 1 order by created_at desc[0m
+  Rendering groups/index.html.erb within layouts/application
+  [1m[36mGroup Load (0.5ms)[0m  [1m[34mSELECT `groups`.* FROM `groups` WHERE `groups`.`user_id` = 1[0m
+  Rendered groups/index.html.erb within layouts/application (4.7ms)
+Completed 200 OK in 130ms (Views: 120.6ms | ActiveRecord: 1.7ms)
+
+
+Started GET "/images/thumb/missing.png" for 172.19.0.4 at 2018-04-01 13:57:33 +0000
+Cannot render console from 172.19.0.1! Allowed networks: 127.0.0.1, ::1, 127.0.0.0/127.255.255.255
+  
+ActionController::RoutingError (No route matches [GET] "/images/thumb/missing.png"):
+  
+actionpack (5.1.5) lib/action_dispatch/middleware/debug_exceptions.rb:63:in `call'
+web-console (3.5.1) lib/web_console/middleware.rb:135:in `call_app'
+web-console (3.5.1) lib/web_console/middleware.rb:20:in `block in call'
+web-console (3.5.1) lib/web_console/middleware.rb:18:in `catch'
+web-console (3.5.1) lib/web_console/middleware.rb:18:in `call'
+actionpack (5.1.5) lib/action_dispatch/middleware/show_exceptions.rb:31:in `call'
+railties (5.1.5) lib/rails/rack/logger.rb:36:in `call_app'
+railties (5.1.5) lib/rails/rack/logger.rb:24:in `block in call'
+activesupport (5.1.5) lib/active_support/tagged_logging.rb:69:in `block in tagged'
+activesupport (5.1.5) lib/active_support/tagged_logging.rb:26:in `tagged'
+activesupport (5.1.5) lib/active_support/tagged_logging.rb:69:in `tagged'
+railties (5.1.5) lib/rails/rack/logger.rb:24:in `call'
+sprockets-rails (3.2.1) lib/sprockets/rails/quiet_assets.rb:13:in `call'
+actionpack (5.1.5) lib/action_dispatch/middleware/remote_ip.rb:79:in `call'
+actionpack (5.1.5) lib/action_dispatch/middleware/request_id.rb:25:in `call'
+rack (2.0.4) lib/rack/method_override.rb:22:in `call'
+rack (2.0.4) lib/rack/runtime.rb:22:in `call'
+activesupport (5.1.5) lib/active_support/cache/strategy/local_cache_middleware.rb:27:in `call'
+actionpack (5.1.5) lib/action_dispatch/middleware/executor.rb:12:in `call'
+actionpack (5.1.5) lib/action_dispatch/middleware/static.rb:125:in `call'
+rack (2.0.4) lib/rack/sendfile.rb:111:in `call'
+railties (5.1.5) lib/rails/engine.rb:522:in `call'
+puma (3.11.3) lib/puma/configuration.rb:225:in `call'
+puma (3.11.3) lib/puma/server.rb:624:in `handle_request'
+puma (3.11.3) lib/puma/server.rb:438:in `process_client'
+puma (3.11.3) lib/puma/server.rb:302:in `block in run'
+puma (3.11.3) lib/puma/thread_pool.rb:120:in `block in spawn_thread'
+Started GET "/ff" for 172.19.0.4 at 2018-04-01 13:57:33 +0000
+Cannot render console from 172.19.0.1! Allowed networks: 127.0.0.1, ::1, 127.0.0.0/127.255.255.255
+  
+ActionController::RoutingError (No route matches [GET] "/ff"):
+  
+actionpack (5.1.5) lib/action_dispatch/middleware/debug_exceptions.rb:63:in `call'
+web-console (3.5.1) lib/web_console/middleware.rb:135:in `call_app'
+web-console (3.5.1) lib/web_console/middleware.rb:20:in `block in call'
+web-console (3.5.1) lib/web_console/middleware.rb:18:in `catch'
+web-console (3.5.1) lib/web_console/middleware.rb:18:in `call'
+actionpack (5.1.5) lib/action_dispatch/middleware/show_exceptions.rb:31:in `call'
+railties (5.1.5) lib/rails/rack/logger.rb:36:in `call_app'
+railties (5.1.5) lib/rails/rack/logger.rb:24:in `block in call'
+activesupport (5.1.5) lib/active_support/tagged_logging.rb:69:in `block in tagged'
+activesupport (5.1.5) lib/active_support/tagged_logging.rb:26:in `tagged'
+activesupport (5.1.5) lib/active_support/tagged_logging.rb:69:in `tagged'
+railties (5.1.5) lib/rails/rack/logger.rb:24:in `call'
+sprockets-rails (3.2.1) lib/sprockets/rails/quiet_assets.rb:13:in `call'
+actionpack (5.1.5) lib/action_dispatch/middleware/remote_ip.rb:79:in `call'
+actionpack (5.1.5) lib/action_dispatch/middleware/request_id.rb:25:in `call'
+rack (2.0.4) lib/rack/method_override.rb:22:in `call'
+rack (2.0.4) lib/rack/runtime.rb:22:in `call'
+activesupport (5.1.5) lib/active_support/cache/strategy/local_cache_middleware.rb:27:in `call'
+actionpack (5.1.5) lib/action_dispatch/middleware/executor.rb:12:in `call'
+actionpack (5.1.5) lib/action_dispatch/middleware/static.rb:125:in `call'
+rack (2.0.4) lib/rack/sendfile.rb:111:in `call'
+railties (5.1.5) lib/rails/engine.rb:522:in `call'
+puma (3.11.3) lib/puma/configuration.rb:225:in `call'
+puma (3.11.3) lib/puma/server.rb:624:in `handle_request'
+puma (3.11.3) lib/puma/server.rb:438:in `process_client'
+puma (3.11.3) lib/puma/server.rb:302:in `block in run'
+puma (3.11.3) lib/puma/thread_pool.rb:120:in `block in spawn_thread'
+Started GET "/" for 172.19.0.4 at 2018-04-01 14:07:48 +0000
+Cannot render console from 172.19.0.1! Allowed networks: 127.0.0.1, ::1, 127.0.0.0/127.255.255.255
+  [1m[35m (93.4ms)[0m  [1m[35mSET NAMES utf8,  @@SESSION.sql_mode = CONCAT(CONCAT(@@sql_mode, ',STRICT_ALL_TABLES'), ',NO_AUTO_VALUE_ON_ZERO'),  @@SESSION.sql_auto_is_null = 0, @@SESSION.wait_timeout = 2147483[0m
+  [1m[35m (1.0ms)[0m  [1m[34mSELECT `schema_migrations`.`version` FROM `schema_migrations` ORDER BY `schema_migrations`.`version` ASC[0m
+Processing by HomeController#index as HTML
+  [1m[36mUser Load (1.2ms)[0m  [1m[34mSELECT  `users`.* FROM `users` WHERE `users`.`id` = 1 ORDER BY `users`.`id` ASC LIMIT 1[0m
+  [1m[35m (43.0ms)[0m  [1m[34mselect notifications.id, notifications.message, notifications.from, notifications.typ, notifications.orderId, notifications.created_at from notifications, user_notifications where notifications.id = user_notifications.notification_id and user_id = 1 order by created_at desc[0m
+  [1m[36mUser Load (1.2ms)[0m  [1m[34mSELECT `users`.* FROM `users` INNER JOIN `friendships` ON `users`.`id` = `friendships`.`friend_id` WHERE `friendships`.`user_id` = 1[0m
+  Rendering home/index.html.erb within layouts/application
+  [1m[36mOrder Load (1.3ms)[0m  [1m[34mSELECT  `orders`.* FROM `orders` WHERE `orders`.`user_id` = 1 ORDER BY `orders`.`created_at` DESC LIMIT 4[0m
+  Rendered home/index.html.erb within layouts/application (6.1ms)
+Completed 200 OK in 1104ms (Views: 768.3ms | ActiveRecord: 110.0ms)
+
+
+Started GET "/images/thumb/missing.png" for 172.19.0.4 at 2018-04-01 14:07:50 +0000
+Cannot render console from 172.19.0.1! Allowed networks: 127.0.0.1, ::1, 127.0.0.0/127.255.255.255
+  
+ActionController::RoutingError (No route matches [GET] "/images/thumb/missing.png"):
+  
+actionpack (5.1.5) lib/action_dispatch/middleware/debug_exceptions.rb:63:in `call'
+web-console (3.5.1) lib/web_console/middleware.rb:135:in `call_app'
+web-console (3.5.1) lib/web_console/middleware.rb:20:in `block in call'
+web-console (3.5.1) lib/web_console/middleware.rb:18:in `catch'
+web-console (3.5.1) lib/web_console/middleware.rb:18:in `call'
+actionpack (5.1.5) lib/action_dispatch/middleware/show_exceptions.rb:31:in `call'
+railties (5.1.5) lib/rails/rack/logger.rb:36:in `call_app'
+railties (5.1.5) lib/rails/rack/logger.rb:24:in `block in call'
+activesupport (5.1.5) lib/active_support/tagged_logging.rb:69:in `block in tagged'
+activesupport (5.1.5) lib/active_support/tagged_logging.rb:26:in `tagged'
+activesupport (5.1.5) lib/active_support/tagged_logging.rb:69:in `tagged'
+railties (5.1.5) lib/rails/rack/logger.rb:24:in `call'
+sprockets-rails (3.2.1) lib/sprockets/rails/quiet_assets.rb:13:in `call'
+actionpack (5.1.5) lib/action_dispatch/middleware/remote_ip.rb:79:in `call'
+actionpack (5.1.5) lib/action_dispatch/middleware/request_id.rb:25:in `call'
+rack (2.0.4) lib/rack/method_override.rb:22:in `call'
+rack (2.0.4) lib/rack/runtime.rb:22:in `call'
+activesupport (5.1.5) lib/active_support/cache/strategy/local_cache_middleware.rb:27:in `call'
+actionpack (5.1.5) lib/action_dispatch/middleware/executor.rb:12:in `call'
+actionpack (5.1.5) lib/action_dispatch/middleware/static.rb:125:in `call'
+rack (2.0.4) lib/rack/sendfile.rb:111:in `call'
+railties (5.1.5) lib/rails/engine.rb:522:in `call'
+puma (3.11.3) lib/puma/configuration.rb:225:in `call'
+puma (3.11.3) lib/puma/server.rb:624:in `handle_request'
+puma (3.11.3) lib/puma/server.rb:438:in `process_client'
+puma (3.11.3) lib/puma/server.rb:302:in `block in run'
+puma (3.11.3) lib/puma/thread_pool.rb:120:in `block in spawn_thread'
+Started GET "/" for 172.19.0.4 at 2018-04-01 14:07:55 +0000
+Cannot render console from 172.19.0.1! Allowed networks: 127.0.0.1, ::1, 127.0.0.0/127.255.255.255
+Processing by HomeController#index as HTML
+  [1m[36mUser Load (0.7ms)[0m  [1m[34mSELECT  `users`.* FROM `users` WHERE `users`.`id` = 1 ORDER BY `users`.`id` ASC LIMIT 1[0m
+  [1m[35m (0.8ms)[0m  [1m[34mselect notifications.id, notifications.message, notifications.from, notifications.typ, notifications.orderId, notifications.created_at from notifications, user_notifications where notifications.id = user_notifications.notification_id and user_id = 1 order by created_at desc[0m
+  [1m[36mUser Load (0.6ms)[0m  [1m[34mSELECT `users`.* FROM `users` INNER JOIN `friendships` ON `users`.`id` = `friendships`.`friend_id` WHERE `friendships`.`user_id` = 1[0m
+  Rendering home/index.html.erb within layouts/application
+  [1m[36mOrder Load (0.5ms)[0m  [1m[34mSELECT  `orders`.* FROM `orders` WHERE `orders`.`user_id` = 1 ORDER BY `orders`.`created_at` DESC LIMIT 4[0m
+  Rendered home/index.html.erb within layouts/application (2.9ms)
+Completed 200 OK in 186ms (Views: 173.1ms | ActiveRecord: 2.6ms)
+
+
+Started GET "/images/thumb/missing.png" for 172.19.0.4 at 2018-04-01 14:07:55 +0000
+Cannot render console from 172.19.0.1! Allowed networks: 127.0.0.1, ::1, 127.0.0.0/127.255.255.255
+  
+ActionController::RoutingError (No route matches [GET] "/images/thumb/missing.png"):
+  
+actionpack (5.1.5) lib/action_dispatch/middleware/debug_exceptions.rb:63:in `call'
+web-console (3.5.1) lib/web_console/middleware.rb:135:in `call_app'
+web-console (3.5.1) lib/web_console/middleware.rb:20:in `block in call'
+web-console (3.5.1) lib/web_console/middleware.rb:18:in `catch'
+web-console (3.5.1) lib/web_console/middleware.rb:18:in `call'
+actionpack (5.1.5) lib/action_dispatch/middleware/show_exceptions.rb:31:in `call'
+railties (5.1.5) lib/rails/rack/logger.rb:36:in `call_app'
+railties (5.1.5) lib/rails/rack/logger.rb:24:in `block in call'
+activesupport (5.1.5) lib/active_support/tagged_logging.rb:69:in `block in tagged'
+activesupport (5.1.5) lib/active_support/tagged_logging.rb:26:in `tagged'
+activesupport (5.1.5) lib/active_support/tagged_logging.rb:69:in `tagged'
+railties (5.1.5) lib/rails/rack/logger.rb:24:in `call'
+sprockets-rails (3.2.1) lib/sprockets/rails/quiet_assets.rb:13:in `call'
+actionpack (5.1.5) lib/action_dispatch/middleware/remote_ip.rb:79:in `call'
+actionpack (5.1.5) lib/action_dispatch/middleware/request_id.rb:25:in `call'
+rack (2.0.4) lib/rack/method_override.rb:22:in `call'
+rack (2.0.4) lib/rack/runtime.rb:22:in `call'
+activesupport (5.1.5) lib/active_support/cache/strategy/local_cache_middleware.rb:27:in `call'
+actionpack (5.1.5) lib/action_dispatch/middleware/executor.rb:12:in `call'
+actionpack (5.1.5) lib/action_dispatch/middleware/static.rb:125:in `call'
+rack (2.0.4) lib/rack/sendfile.rb:111:in `call'
+railties (5.1.5) lib/rails/engine.rb:522:in `call'
+puma (3.11.3) lib/puma/configuration.rb:225:in `call'
+puma (3.11.3) lib/puma/server.rb:624:in `handle_request'
+puma (3.11.3) lib/puma/server.rb:438:in `process_client'
+puma (3.11.3) lib/puma/server.rb:302:in `block in run'
+puma (3.11.3) lib/puma/thread_pool.rb:120:in `block in spawn_thread'
+Started GET "/" for 172.19.0.4 at 2018-04-01 14:08:03 +0000
+Cannot render console from 172.19.0.1! Allowed networks: 127.0.0.1, ::1, 127.0.0.0/127.255.255.255
+Processing by HomeController#index as HTML
+Completed 401 Unauthorized in 5ms (ActiveRecord: 0.0ms)
+
+
+Started GET "/users/sign_in" for 172.19.0.4 at 2018-04-01 14:08:03 +0000
+Cannot render console from 172.19.0.1! Allowed networks: 127.0.0.1, ::1, 127.0.0.0/127.255.255.255
+Processing by Devise::SessionsController#new as HTML
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (4.5ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (52.7ms)
+Completed 200 OK in 204ms (Views: 199.4ms | ActiveRecord: 0.0ms)
+
+
